@@ -935,7 +935,7 @@ const struct option long_options[] = {
 	{"late-keyboard-init", optional_argument, NULL, 'k'},
 	{NULL, 0, NULL, 0}
 };
-const char *short_options = ":bhPp:r:c:";
+const char *short_options = ":bhPp:rc:";
 
 static void parse_args(struct tofi *tofi, int argc, char *argv[])
 {
