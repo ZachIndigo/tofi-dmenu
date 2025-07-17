@@ -846,6 +846,7 @@ const struct option long_options[] = {
 	{"help", no_argument, NULL, 'h'},
 	{"bottom", no_argument, NULL, 'b'},
 	{"password", no_argument, NULL, 'P'},
+	{"require", no_argument, NULL, 'r'},
 	{"config", required_argument, NULL, 'c'},
 	{"include", required_argument, NULL, 0},
 	{"anchor", required_argument, NULL, 0},
@@ -933,7 +934,7 @@ const struct option long_options[] = {
 	{"late-keyboard-init", optional_argument, NULL, 'k'},
 	{NULL, 0, NULL, 0}
 };
-const char *short_options = ":bhPc:";
+const char *short_options = ":bhPr:c:";
 
 static void parse_args(struct tofi *tofi, int argc, char *argv[])
 {
@@ -987,6 +988,10 @@ static void parse_args(struct tofi *tofi, int argc, char *argv[])
       }
     } else if (opt == 'P') {
       if (!config_apply(tofi, "password", optarg)) {
+        exit(EXIT_FAILURE);
+      }
+    } else if (opt == 'r') {
+      if (!config_apply(tofi, "require", optarg)) {
         exit(EXIT_FAILURE);
       }
 		} else if (opt == 'k') {
