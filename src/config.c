@@ -321,6 +321,8 @@ bool parse_option(struct tofi *tofi, const char *filename, size_t lineno, const 
 		}
   } else if (strcasecmp(option, "bottom") == 0) {
     tofi->anchor = ANCHOR_BOTTOM;
+  } else if (strcasecmp(option, "password") == 0) {
+    tofi->window.entry.hide_input = true;
 	} else if (strcasecmp(option, "anchor") == 0) {
 		uint32_t val = parse_anchor(filename, lineno, value, &err);
 		if (!err) {

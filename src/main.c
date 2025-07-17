@@ -829,6 +829,7 @@ static void usage(bool err)
 "  -h, --help                           Print this message and exit.\n"
 "  -c, --config <path>                  Specify a config file.\n"
 "  -b, --bottom                         Anchor to the bottom of the screen.\n"
+"  -P, --password                       Hide the input text.\n"
 "      --prompt-text <string>           Prompt text.\n"
 "      --width <px|%>                   Width of the window.\n"
 "      --height <px|%>                  Height of the window.\n"
@@ -844,6 +845,7 @@ static void usage(bool err)
 const struct option long_options[] = {
 	{"help", no_argument, NULL, 'h'},
 	{"bottom", no_argument, NULL, 'b'},
+	{"password", no_argument, NULL, 'P'},
 	{"config", required_argument, NULL, 'c'},
 	{"include", required_argument, NULL, 0},
 	{"anchor", required_argument, NULL, 0},
@@ -931,7 +933,7 @@ const struct option long_options[] = {
 	{"late-keyboard-init", optional_argument, NULL, 'k'},
 	{NULL, 0, NULL, 0}
 };
-const char *short_options = ":bhc:";
+const char *short_options = ":bhPc:";
 
 static void parse_args(struct tofi *tofi, int argc, char *argv[])
 {
@@ -981,6 +983,10 @@ static void parse_args(struct tofi *tofi, int argc, char *argv[])
 			}
     } else if (opt == 'b') {
       if (!config_apply(tofi, "bottom", optarg)) {
+        exit(EXIT_FAILURE);
+      }
+    } else if (opt == 'P') {
+      if (!config_apply(tofi, "password", optarg)) {
         exit(EXIT_FAILURE);
       }
 		} else if (opt == 'k') {
