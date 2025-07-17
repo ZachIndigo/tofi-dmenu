@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.9.2] - 2025-07-17
+### Added
+- Added in some flags for better dmenu compatibility
+
 ## [0.9.1] - 2023-04-10
 ### Fixed
 - Fixed broken line spacing for some fonts with the HarfBuzz backend.
