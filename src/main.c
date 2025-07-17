@@ -828,6 +828,7 @@ static void usage(bool err)
 "Basic options:\n"
 "  -h, --help                           Print this message and exit.\n"
 "  -c, --config <path>                  Specify a config file.\n"
+"  -b, --bottom                         Anchor to the bottom of the screen.\n"
 "      --prompt-text <string>           Prompt text.\n"
 "      --width <px|%>                   Width of the window.\n"
 "      --height <px|%>                  Height of the window.\n"
@@ -842,6 +843,7 @@ static void usage(bool err)
 /* Option parsing with getopt. */
 const struct option long_options[] = {
 	{"help", no_argument, NULL, 'h'},
+	{"bottom", no_argument, NULL, 'b'},
 	{"config", required_argument, NULL, 'c'},
 	{"include", required_argument, NULL, 0},
 	{"anchor", required_argument, NULL, 0},
@@ -929,7 +931,7 @@ const struct option long_options[] = {
 	{"late-keyboard-init", optional_argument, NULL, 'k'},
 	{NULL, 0, NULL, 0}
 };
-const char *short_options = ":hc:";
+const char *short_options = ":bhc:";
 
 static void parse_args(struct tofi *tofi, int argc, char *argv[])
 {
@@ -977,6 +979,10 @@ static void parse_args(struct tofi *tofi, int argc, char *argv[])
 			if (!config_apply(tofi, long_options[option_index].name, optarg)) {
 				exit(EXIT_FAILURE);
 			}
+    } else if (opt == 'b') {
+      if (!config_apply(tofi, "bottom", optarg)) {
+        exit(EXIT_FAILURE);
+      }
 		} else if (opt == 'k') {
 			/*
 			 * Backwards compatibility for --late-keyboard-init not
