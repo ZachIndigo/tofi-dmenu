@@ -35,6 +35,22 @@ described in the Desktop Entry Specification.
 
 > Specify path to custom config file.
 
+**-b, --bottom**
+
+> Anchor to the bottom of the screen.
+
+**-P, --password**
+
+> Hide the input text.
+
+**-r, --require**
+
+> Require a match to complete.
+
+**-p, --prompt-text**
+
+> Prompt text.
+
 All config file options described in **tofi**(5) are also accepted, in
 the form **--key=value**.
 
