@@ -872,7 +872,7 @@ const struct option long_options[] = {
 	{"text-cursor-background", required_argument, NULL, 0},
 	{"text-cursor-corner-radius", required_argument, NULL, 0},
 	{"text-cursor-thickness", required_argument, NULL, 0},
-	{"prompt-text", required_argument, NULL, 0},
+	{"prompt-text", required_argument, NULL, 'p'},
 	{"prompt-padding", required_argument, NULL, 0},
 	{"prompt-color", required_argument, NULL, 0},
 	{"prompt-background", required_argument, NULL, 0},
@@ -934,7 +934,7 @@ const struct option long_options[] = {
 	{"late-keyboard-init", optional_argument, NULL, 'k'},
 	{NULL, 0, NULL, 0}
 };
-const char *short_options = ":bhPr:c:";
+const char *short_options = ":bhPp:r:c:";
 
 static void parse_args(struct tofi *tofi, int argc, char *argv[])
 {
@@ -992,6 +992,10 @@ static void parse_args(struct tofi *tofi, int argc, char *argv[])
       }
     } else if (opt == 'r') {
       if (!config_apply(tofi, "require", optarg)) {
+        exit(EXIT_FAILURE);
+      }
+    } else if (opt == 'p') {
+      if (!config_apply(tofi, "prompt-text", optarg)) {
         exit(EXIT_FAILURE);
       }
 		} else if (opt == 'k') {
