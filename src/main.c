@@ -819,6 +819,26 @@ static const struct wl_surface_listener dummy_surface_listener = {
 	.leave = dummy_surface_leave
 };
 
+static void dmenu_usage(bool err)
+{
+	fprintf(err ? stderr : stdout, "%s",
+"Usage: tofi --dmenu [-bfirvP] [-p <string>] [-m <name>] [-f font]\n"
+"\n"
+"Basic options:\n"
+"  -h, --help                           Print this message and exit.\n"
+"  -b                                   Anchor to the bottom of the screen.\n"
+"  -f                                   Does nothing; included for dmenu compat.\n"
+"  -i                                   Does nothing; included for dmenu compat.\n"
+"  -r                                   Require a match to complete.\n"
+"  -v                                   Prints the version info and exits.\n"
+"  -P                                   Hide the input text.\n"
+"  -p                                   Prompt text.\n"
+"  -m                                   Name of output to display window on.\n"
+"                                       Location on screen to anchor window.\n"
+"\n"
+"All options listed in \"man 5 tofi\" are also accpted in the form \"--key=value\".\n"
+	);
+}
 
 static void usage(bool err)
 {
@@ -828,10 +848,8 @@ static void usage(bool err)
 "Basic options:\n"
 "  -h, --help                           Print this message and exit.\n"
 "  -c, --config <path>                  Specify a config file.\n"
-"  -b, --bottom                         Anchor to the bottom of the screen.\n"
-"  -P, --password                       Hide the input text.\n"
-"  -r, --require                        Require a match to complete.\n"
-"  -p, --prompt-text <string>           Prompt text.\n"
+"  -d, --dmenu                          Use dmenu compatibility flags.\n"
+"      --prompt-text <string>           Prompt text.\n"
 "      --width <px|%>                   Width of the window.\n"
 "      --height <px|%>                  Height of the window.\n"
 "      --output <name>                  Name of output to display window on.\n"
@@ -932,30 +950,45 @@ const struct option long_options[] = {
 	{"late-keyboard-init", optional_argument, NULL, 'k'},
 	{NULL, 0, NULL, 0}
 };
-const char *short_options = ":bhPp:rc:";
+const char *short_options = ":hdc:";
+const char *dmenu_short_options = ":bdfirvPhp:m:f:c:";
 
 static void parse_args(struct tofi *tofi, int argc, char *argv[])
 {
-
 	bool load_default_config = true;
+  bool dmenu_mode = false;
 	int option_index = 0;
 
 	/* Handle errors ourselves. */
 	opterr = 0;
 
-	/* First pass, just check for config file, help, and errors. */
+  if (strcasecmp(argv[0], "dmenu") == 0) {
+    dmenu_mode = true;
+  }
+
+	/* First pass, just check for dmenu mode, config file, help, and errors. */
 	optind = 1;
 	int opt = getopt_long(argc, argv, short_options, long_options, &option_index);
 	while (opt != -1) {
 		if (opt == 'h') {
-			usage(false);
+      if (dmenu_mode) {
+        dmenu_usage(false);
+      } else {
+        usage(false);
+      }
 			exit(EXIT_SUCCESS);
+    } else if (opt == 'd') {
+      dmenu_mode = true;
 		} else if (opt == 'c') {
 			config_load(tofi, optarg);
 			load_default_config = false;
 		} else if (opt == ':') {
 			log_error("Option %s requires an argument.\n", argv[optind - 1]);
-			usage(true);
+      if (dmenu_mode) {
+        dmenu_usage(true);
+      } else {
+        usage(true);
+      }
 			exit(EXIT_FAILURE);
 		} else if (opt == '?') {
 			if (optopt) {
@@ -963,10 +996,17 @@ static void parse_args(struct tofi *tofi, int argc, char *argv[])
 			} else {
 				log_error("Unknown option %s.\n", argv[optind - 1]);
 			}
-			usage(true);
+      if (dmenu_mode) {
+        dmenu_usage(true);
+      } else {
+        usage(true);
+      }
 			exit(EXIT_FAILURE);
 		}
-		opt = getopt_long(argc, argv, short_options, long_options, &option_index);
+    if (dmenu_mode)
+      opt = getopt_long(argc, argv, dmenu_short_options, long_options, &option_index);
+    else
+      opt = getopt_long(argc, argv, short_options, long_options, &option_index);
 	}
 	if (load_default_config) {
 		config_load(tofi, NULL);
@@ -976,39 +1016,47 @@ static void parse_args(struct tofi *tofi, int argc, char *argv[])
 	optind = 1;
 	opt = getopt_long(argc, argv, short_options, long_options, &option_index);
 	while (opt != -1) {
-		if (opt == 0) {
-			if (!config_apply(tofi, long_options[option_index].name, optarg)) {
-				exit(EXIT_FAILURE);
-			}
-    } else if (opt == 'b') {
-      if (!config_apply(tofi, "anchor", "bottom")) {
-        exit(EXIT_FAILURE);
+    if (!dmenu_mode) {
+      if (opt == 0) {
+        if (!config_apply(tofi, long_options[option_index].name, optarg)) {
+          exit(EXIT_FAILURE);
+        }
+      } else if (opt == 'k') {
+        /*
+         * Backwards compatibility for --late-keyboard-init not
+         * taking an argument.
+         */
+        if (optarg) {
+          if (!config_apply(tofi, long_options[option_index].name, optarg)) {
+            exit(EXIT_FAILURE);
+          }
+        } else {
+          tofi->late_keyboard_init = true;
+        }
       }
-    } else if (opt == 'r') {
-      if (!config_apply(tofi, "require-match", "true")) {
-        exit(EXIT_FAILURE);
+    } else {
+      if (opt == 'b') {
+        if (!config_apply(tofi, "anchor", "bottom")) {
+          exit(EXIT_FAILURE);
+        }
+      } else if (opt == 'r') {
+        if (!config_apply(tofi, "require-match", "true")) {
+          exit(EXIT_FAILURE);
+        }
+      } else if (opt == 'P') {
+        if (!config_apply(tofi, "hide-input", "true")) {
+          exit(EXIT_FAILURE);
+        }
+      } else if (opt == 'm') {
+        if (!config_apply(tofi, "output", optarg)) {
+          exit(EXIT_FAILURE);
+        }
+      } else if (opt == 'p') {
+        if (!config_apply(tofi, "prompt-text", optarg)) {
+          exit(EXIT_FAILURE);
+        }
       }
-    } else if (opt == 'P') {
-      if (!config_apply(tofi, "hide-input", "true")) {
-        exit(EXIT_FAILURE);
-      }
-    } else if (opt == 'p') {
-      if (!config_apply(tofi, "prompt-text", optarg)) {
-        exit(EXIT_FAILURE);
-      }
-		} else if (opt == 'k') {
-			/*
-			 * Backwards compatibility for --late-keyboard-init not
-			 * taking an argument.
-			 */
-			if (optarg) {
-				if (!config_apply(tofi, long_options[option_index].name, optarg)) {
-					exit(EXIT_FAILURE);
-				}
-			} else {
-				tofi->late_keyboard_init = true;
-			}
-		}
+    }
 		opt = getopt_long(argc, argv, short_options, long_options, &option_index);
 	}
 
