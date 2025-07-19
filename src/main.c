@@ -956,39 +956,39 @@ const char *dmenu_short_options = ":bdfirvPhp:m:f:c:";
 static void parse_args(struct tofi *tofi, int argc, char *argv[])
 {
 	bool load_default_config = true;
-  bool dmenu_mode = false;
+	bool dmenu_mode = false;
 	int option_index = 0;
 
 	/* Handle errors ourselves. */
 	opterr = 0;
 
-  if (strcasecmp(argv[0], "dmenu") == 0) {
-    dmenu_mode = true;
-  }
+	if (strcasecmp(argv[0], "dmenu") == 0) {
+		dmenu_mode = true;
+	}
 
 	/* First pass, just check for dmenu mode, config file, help, and errors. */
 	optind = 1;
 	int opt = getopt_long(argc, argv, short_options, long_options, &option_index);
 	while (opt != -1) {
 		if (opt == 'h') {
-      if (dmenu_mode) {
-        dmenu_usage(false);
-      } else {
-        usage(false);
-      }
+			if (dmenu_mode) {
+				dmenu_usage(false);
+			} else {
+				usage(false);
+			}
 			exit(EXIT_SUCCESS);
-    } else if (opt == 'd') {
-      dmenu_mode = true;
+		} else if (opt == 'd') {
+			dmenu_mode = true;
 		} else if (opt == 'c') {
 			config_load(tofi, optarg);
 			load_default_config = false;
 		} else if (opt == ':') {
 			log_error("Option %s requires an argument.\n", argv[optind - 1]);
-      if (dmenu_mode) {
-        dmenu_usage(true);
-      } else {
-        usage(true);
-      }
+			if (dmenu_mode) {
+				dmenu_usage(true);
+			} else {
+				usage(true);
+			}
 			exit(EXIT_FAILURE);
 		} else if (opt == '?') {
 			if (optopt) {
@@ -996,17 +996,17 @@ static void parse_args(struct tofi *tofi, int argc, char *argv[])
 			} else {
 				log_error("Unknown option %s.\n", argv[optind - 1]);
 			}
-      if (dmenu_mode) {
-        dmenu_usage(true);
-      } else {
-        usage(true);
-      }
+			if (dmenu_mode) {
+				dmenu_usage(true);
+			} else {
+				usage(true);
+			}
 			exit(EXIT_FAILURE);
 		}
-    if (dmenu_mode)
-      opt = getopt_long(argc, argv, dmenu_short_options, long_options, &option_index);
-    else
-      opt = getopt_long(argc, argv, short_options, long_options, &option_index);
+		if (dmenu_mode)
+			opt = getopt_long(argc, argv, dmenu_short_options, long_options, &option_index);
+		else
+			opt = getopt_long(argc, argv, short_options, long_options, &option_index);
 	}
 	if (load_default_config) {
 		config_load(tofi, NULL);
@@ -1016,47 +1016,47 @@ static void parse_args(struct tofi *tofi, int argc, char *argv[])
 	optind = 1;
 	opt = getopt_long(argc, argv, short_options, long_options, &option_index);
 	while (opt != -1) {
-    if (!dmenu_mode) {
-      if (opt == 0) {
-        if (!config_apply(tofi, long_options[option_index].name, optarg)) {
-          exit(EXIT_FAILURE);
-        }
-      } else if (opt == 'k') {
-        /*
-         * Backwards compatibility for --late-keyboard-init not
-         * taking an argument.
-         */
-        if (optarg) {
-          if (!config_apply(tofi, long_options[option_index].name, optarg)) {
-            exit(EXIT_FAILURE);
-          }
-        } else {
-          tofi->late_keyboard_init = true;
-        }
-      }
-    } else {
-      if (opt == 'b') {
-        if (!config_apply(tofi, "anchor", "bottom")) {
-          exit(EXIT_FAILURE);
-        }
-      } else if (opt == 'r') {
-        if (!config_apply(tofi, "require-match", "true")) {
-          exit(EXIT_FAILURE);
-        }
-      } else if (opt == 'P') {
-        if (!config_apply(tofi, "hide-input", "true")) {
-          exit(EXIT_FAILURE);
-        }
-      } else if (opt == 'm') {
-        if (!config_apply(tofi, "output", optarg)) {
-          exit(EXIT_FAILURE);
-        }
-      } else if (opt == 'p') {
-        if (!config_apply(tofi, "prompt-text", optarg)) {
-          exit(EXIT_FAILURE);
-        }
-      }
-    }
+		if (!dmenu_mode) {
+			if (opt == 0) {
+				if (!config_apply(tofi, long_options[option_index].name, optarg)) {
+					exit(EXIT_FAILURE);
+				}
+			} else if (opt == 'k') {
+				/*
+				 * Backwards compatibility for --late-keyboard-init not
+				 * taking an argument.
+				 */
+				if (optarg) {
+					if (!config_apply(tofi, long_options[option_index].name, optarg)) {
+						exit(EXIT_FAILURE);
+					}
+				} else {
+					tofi->late_keyboard_init = true;
+				}
+			}
+		} else {
+			if (opt == 'b') {
+				if (!config_apply(tofi, "anchor", "bottom")) {
+					exit(EXIT_FAILURE);
+				}
+			} else if (opt == 'r') {
+				if (!config_apply(tofi, "require-match", "true")) {
+					exit(EXIT_FAILURE);
+				}
+			} else if (opt == 'P') {
+				if (!config_apply(tofi, "hide-input", "true")) {
+					exit(EXIT_FAILURE);
+				}
+			} else if (opt == 'm') {
+				if (!config_apply(tofi, "output", optarg)) {
+					exit(EXIT_FAILURE);
+				}
+			} else if (opt == 'p') {
+				if (!config_apply(tofi, "prompt-text", optarg)) {
+					exit(EXIT_FAILURE);
+				}
+			}
+		}
 		opt = getopt_long(argc, argv, short_options, long_options, &option_index);
 	}
 
