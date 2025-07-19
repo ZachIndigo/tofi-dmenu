@@ -845,9 +845,6 @@ static void usage(bool err)
 /* Option parsing with getopt. */
 const struct option long_options[] = {
 	{"help", no_argument, NULL, 'h'},
-	{"bottom", no_argument, NULL, 'b'},
-	{"password", no_argument, NULL, 'P'},
-	{"require", no_argument, NULL, 'r'},
 	{"config", required_argument, NULL, 'c'},
 	{"include", required_argument, NULL, 0},
 	{"anchor", required_argument, NULL, 0},
@@ -984,15 +981,15 @@ static void parse_args(struct tofi *tofi, int argc, char *argv[])
 				exit(EXIT_FAILURE);
 			}
     } else if (opt == 'b') {
-      if (!config_apply(tofi, "bottom", optarg)) {
-        exit(EXIT_FAILURE);
-      }
-    } else if (opt == 'P') {
-      if (!config_apply(tofi, "password", optarg)) {
+      if (!config_apply(tofi, "anchor", "bottom")) {
         exit(EXIT_FAILURE);
       }
     } else if (opt == 'r') {
-      if (!config_apply(tofi, "require", optarg)) {
+      if (!config_apply(tofi, "require-match", "true")) {
+        exit(EXIT_FAILURE);
+      }
+    } else if (opt == 'P') {
+      if (!config_apply(tofi, "hide-input", "true")) {
         exit(EXIT_FAILURE);
       }
     } else if (opt == 'p') {
