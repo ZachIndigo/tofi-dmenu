@@ -819,6 +819,13 @@ static const struct wl_surface_listener dummy_surface_listener = {
 	.leave = dummy_surface_leave
 };
 
+static void version()
+{
+	fprintf(stdout, "%s",
+"tofi-0.9.2\n"
+	);
+}
+
 static void dmenu_usage(bool err)
 {
 	fprintf(err ? stderr : stdout, "%s",
@@ -976,6 +983,9 @@ static void parse_args(struct tofi *tofi, int argc, char *argv[])
 			} else {
 				usage(false);
 			}
+			exit(EXIT_SUCCESS);
+		} else if (opt == 'v') {
+			version();
 			exit(EXIT_SUCCESS);
 		} else if (opt == 'd') {
 			dmenu_mode = true;
