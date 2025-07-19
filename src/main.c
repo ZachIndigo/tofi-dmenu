@@ -1024,7 +1024,10 @@ static void parse_args(struct tofi *tofi, int argc, char *argv[])
 
 	/* Second pass, parse everything else. */
 	optind = 1;
-	opt = getopt_long(argc, argv, short_options, long_options, &option_index);
+  if (dmenu_mode)
+		opt = getopt_long(argc, argv, dmenu_short_options, long_options, &option_index);
+  else
+		opt = getopt_long(argc, argv, short_options, long_options, &option_index);
 	while (opt != -1) {
 		if (!dmenu_mode) {
 			if (opt == 0) {
@@ -1067,7 +1070,10 @@ static void parse_args(struct tofi *tofi, int argc, char *argv[])
 				}
 			}
 		}
-		opt = getopt_long(argc, argv, short_options, long_options, &option_index);
+		if (dmenu_mode)
+			opt = getopt_long(argc, argv, dmenu_short_options, long_options, &option_index);
+		else
+			opt = getopt_long(argc, argv, short_options, long_options, &option_index);
 	}
 
 	if (optind < argc) {
