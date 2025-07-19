@@ -12,6 +12,8 @@ tofi - Tiny dynamic menu for Wayland, inspired by *rofi*(1) and *dmenu*(1).
 
 *tofi-drun* [options...]
 
+*dmenu* [options...]
+
 # DESCRIPTION
 
 *tofi* is a tiny dynamic menu for Wayland compositors supporting the
@@ -25,6 +27,9 @@ When invoked via the name *tofi-drun*, *tofi* will not accept items on stdin,
 and will generate a list of applications from desktop files as described in the
 Desktop Entry Specification.
 
+When invoked via the name *dmenu*, *tofi* will only use the flags in
+DMENU-OPTIONS.
+
 # OPTIONS
 
 *-h, --help*
@@ -33,20 +38,44 @@ Desktop Entry Specification.
 *-c, --config* <path>
 	Specify path to custom config file.
 
-*-b, --bottom*
-	Anchor to the bottom of the screen.
+*-d, --dmenu*
 
-*-P, --password*
-	Hide the input text.
-
-*-r, --require*
-	Require a match to complete.
-
-*-p, --prompt-text*
-	Prompt text.
+	Turns on dmenu compatibility flags. All flags after are treated like
+DMENU-OPTIONS.
 
 All config file options described in *tofi*(5) are also accepted, in the form
 *--key=value*.
+
+# DMENU-OPTIONS
+
+*-b*
+
+	Anchor to the bottom of the screen.
+
+*-f, -i*
+
+	Ignored, included for dmenu compatibility.
+
+*-r*
+
+	Require a match to complete.
+
+*-v*
+
+	Prints the version and exits.
+
+*-P*
+
+	Hide the input text.
+
+*-p*
+
+	Prompt text.
+
+*-m*
+
+	Sets the output to display tofi on.
+
 
 # KEYS
 
