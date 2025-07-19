@@ -829,7 +829,7 @@ static void version()
 static void dmenu_usage(bool err)
 {
 	fprintf(err ? stderr : stdout, "%s",
-"Usage: tofi --dmenu [-bfirvP] [-p <string>] [-m <name>] [-f font]\n"
+"Usage: tofi --dmenu [-bfirvP] [-p <string>] [-m <name>]\n"
 "\n"
 "Basic options:\n"
 "  -h, --help                           Print this message and exit.\n"
