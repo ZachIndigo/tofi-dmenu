@@ -841,7 +841,6 @@ static void dmenu_usage(bool err)
 "  -P                                   Hide the input text.\n"
 "  -p                                   Prompt text.\n"
 "  -m                                   Name of output to display window on.\n"
-"                                       Location on screen to anchor window.\n"
 "\n"
 "All options listed in \"man 5 tofi\" are also accpted in the form \"--key=value\".\n"
 	);
@@ -1024,30 +1023,29 @@ static void parse_args(struct tofi *tofi, int argc, char *argv[])
 
 	/* Second pass, parse everything else. */
 	optind = 1;
-  if (dmenu_mode)
+	if (dmenu_mode)
 		opt = getopt_long(argc, argv, dmenu_short_options, long_options, &option_index);
-  else
+	else
 		opt = getopt_long(argc, argv, short_options, long_options, &option_index);
 	while (opt != -1) {
-		if (!dmenu_mode) {
-			if (opt == 0) {
+		if (opt == 0) {
+			if (!config_apply(tofi, long_options[option_index].name, optarg)) {
+				exit(EXIT_FAILURE);
+			}
+		} else if (opt == 'k') {
+			/*
+			 * Backwards compatibility for --late-keyboard-init not
+			 * taking an argument.
+			 */
+			if (optarg) {
 				if (!config_apply(tofi, long_options[option_index].name, optarg)) {
 					exit(EXIT_FAILURE);
 				}
-			} else if (opt == 'k') {
-				/*
-				 * Backwards compatibility for --late-keyboard-init not
-				 * taking an argument.
-				 */
-				if (optarg) {
-					if (!config_apply(tofi, long_options[option_index].name, optarg)) {
-						exit(EXIT_FAILURE);
-					}
-				} else {
-					tofi->late_keyboard_init = true;
-				}
+			} else {
+				tofi->late_keyboard_init = true;
 			}
-		} else {
+		}
+		if (dmenu_mode) {
 			if (opt == 'b') {
 				if (!config_apply(tofi, "anchor", "bottom")) {
 					exit(EXIT_FAILURE);
@@ -1069,11 +1067,10 @@ static void parse_args(struct tofi *tofi, int argc, char *argv[])
 					exit(EXIT_FAILURE);
 				}
 			}
-		}
-		if (dmenu_mode)
 			opt = getopt_long(argc, argv, dmenu_short_options, long_options, &option_index);
-		else
+		} else {
 			opt = getopt_long(argc, argv, short_options, long_options, &option_index);
+		}
 	}
 
 	if (optind < argc) {
