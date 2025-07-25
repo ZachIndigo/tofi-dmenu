@@ -822,7 +822,7 @@ static const struct wl_surface_listener dummy_surface_listener = {
 static void version()
 {
 	fprintf(stdout, "%s",
-"tofi-0.9.3\n"
+"tofi-0.9.1-zir\n"
 	);
 }
 
