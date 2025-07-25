@@ -1,12 +1,9 @@
 # Changelog
 
-## [0.9.3] - 2025-07-19
-### Added
-- Improve dmenu compatibility with flags
-
-## [0.9.2] - 2025-07-17
+## [0.9.1-zir] - 2025-07-24
 ### Added
 - Added in some flags for better dmenu compatibility
+- Added in option to run as dmenu
 
 ## [0.9.1] - 2023-04-10
 ### Fixed
