@@ -18,6 +18,7 @@ single frame.
   * [Building](#building)
   * [Arch](#arch)
 * [Usage](#usage)
+  * [DMENU Compatibility](#DMENU Compatibility)
   * [Theming](#theming)
 * [Performance](#performance)
   * [Options](#options)
@@ -98,7 +99,42 @@ set $drun tofi-drun --drun-launch=true
 bindsym $mod+Shift+d exec $drun
 ```
 
+Tofi can also be run as `dmenu` (not included), which will take advantage of
+the dmenu compatibility flags. Alternatively, running
+
+`tofi [-c <config_file>] -d [<...>]`
+
+will use the dmenu compatibility flags as well.
+
 See the main [manpage](doc/tofi.1.md) for more info.
+
+### DMENU Compatibility
+
+The following dmenu (and dmenu patch) flags are fully implemented:
+
+```
+  -b                                   Anchor to the bottom of the screen.
+  -r                                   Require a match to complete.
+  -v                                   Prints the version info and exits.
+  -P                                   Hide the input text.
+  -p                                   Prompt text.
+  -m                                   Name of output to display window on.
+```
+
+The following dmenu (and dmenu patch) flags are included, but do nothing, as
+there is not a direct equivalent. From the dmenu man page:
+
+```
+  -f  dmenu grabs the keyboard before reading stdin if not reading from a  tty.
+      This is faster, but will lock up X until stdin reaches end-of-file.
+  -i  dmenu matches menu items case insensitively.
+```
+
+For -f, this is not a thing for tofi, and for -i this is the default behavior.
+
+NOTE: one of my favorite patches, `-l`, has not been implemented, because I
+have not been able to figure out how to calculate the height properly yet.
+However, long term I would love to implement it.
 
 ### Theming
 
